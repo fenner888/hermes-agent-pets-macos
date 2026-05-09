@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pet Project"
+  short_description: "Starter workflow for this pet project"
+  default_prompt: "Use $pet-project to plan and execute the next small improvement in this pet project."

@@ -1,0 +1,352 @@
+{
+  "schema": "hermes.agent_pet.roster.v1",
+  "version": 1,
+  "stateModel": {
+    "requiredStates": [
+      "idle",
+      "thinking",
+      "working",
+      "success",
+      "blocked",
+      "error",
+      "sleeping",
+      "reminding",
+      "learning",
+      "recalling"
+    ],
+    "states": [
+      {
+        "id": "idle",
+        "label": "Idle",
+        "description": "Companion is awake, calm, and available.",
+        "overlayFallback": "idle"
+      },
+      {
+        "id": "thinking",
+        "label": "Thinking",
+        "description": "Hermes is planning, reasoning, or preparing a response.",
+        "overlayFallback": "waiting"
+      },
+      {
+        "id": "working",
+        "label": "Working",
+        "description": "Hermes is executing a tool, command, workflow, or task.",
+        "overlayFallback": "running"
+      },
+      {
+        "id": "success",
+        "label": "Success",
+        "description": "Hermes completed a task or made useful progress.",
+        "overlayFallback": "success"
+      },
+      {
+        "id": "blocked",
+        "label": "Blocked",
+        "description": "Hermes needs approval, clarification, permissions, or a safety pause.",
+        "overlayFallback": "stop-sign"
+      },
+      {
+        "id": "error",
+        "label": "Error",
+        "description": "A command, workflow, or integration failed.",
+        "overlayFallback": "failed"
+      },
+      {
+        "id": "sleeping",
+        "label": "Sleeping",
+        "description": "Companion is offline or not currently watching Hermes.",
+        "overlayFallback": "idle"
+      },
+      {
+        "id": "reminding",
+        "label": "Reminding",
+        "description": "Hermes is surfacing a reminder, check-in, or scheduled follow-up.",
+        "overlayFallback": "waving"
+      },
+      {
+        "id": "learning",
+        "label": "Learning",
+        "description": "Hermes is discovering, creating, refining, or installing a skill.",
+        "overlayFallback": "review"
+      },
+      {
+        "id": "recalling",
+        "label": "Recalling",
+        "description": "Hermes is using memory, summaries, context, or prior decisions.",
+        "overlayFallback": "review"
+      }
+    ]
+  },
+  "companions": [
+    {
+      "id": "koda",
+      "name": "Koda",
+      "animalInspiration": "wolf/dog",
+      "hermesRole": "goal guardian",
+      "personality": "loyal, protective, steady",
+      "shortBio": "Koda keeps the active goal in view, nudging Hermes and the user when work drifts, stalls, or needs a clear next step.",
+      "visualDescription": "Humanoid robot wolf/dog goal guardian with dark gunmetal armor, tall angular ears, amber eyes, an amber chest core, compact heroic proportions, clawed feet, and small blue LED accents.",
+      "primaryColor": "#F6A400",
+      "secondaryColor": "#18212B",
+      "accentColor": "#2DA8FF",
+      "defaultState": "idle",
+      "supportedStates": [
+        "idle",
+        "thinking",
+        "working",
+        "success",
+        "blocked",
+        "error",
+        "sleeping",
+        "reminding",
+        "learning",
+        "recalling"
+      ],
+      "imagePlaceholderPath": "hermes-pet-agent/assets/koda/spritesheet.webp",
+      "spritePlaceholderPath": "hermes-pet-agent/assets/koda/spritesheet.webp",
+      "artStatus": "final-koda-spritesheet",
+      "referenceArt": {
+        "sourceStatus": "imported",
+        "expectedSourcePath": "reference-art/koda/source.png",
+        "chatImageOrder": 1,
+        "canonicalDesignNotes": [
+          "Dark gunmetal humanoid robot wolf/dog with oversized expressive head and alert ears.",
+          "Amber eyes and circular amber chest core should remain the main read at small desktop sizes.",
+          "Blue accent lights are secondary and should not overpower the goal-guardian amber."
+        ],
+        "sourceImagePath": "reference-art/koda/source.png"
+      },
+      "suggestedAnimationNotes": [
+        "Final Koda v1 spritesheet includes idle, running-right, running-left, waving, jumping, failed, waiting, running, and review rows.",
+        "Hermes blocked/error states currently map through the shared overlay fallback states.",
+        "Goal drift reminder can use the waving/reminding row until a dedicated goal-guard row exists."
+      ],
+      "useCaseInsideHermes": "Tracks active /goal progress, reminds the user when a task is blocked or drifting."
+    },
+    {
+      "id": "miko",
+      "name": "Miko",
+      "animalInspiration": "fox",
+      "hermesRole": "skill scout",
+      "personality": "clever, fast, strategic",
+      "shortBio": "Miko appears around skill discovery and improvement, making Hermes feel quick, curious, and tactical when new capabilities are found.",
+      "visualDescription": "Sleek humanoid robot fox skill scout with sharp ears, slim agile armor, orange eyes, an orange chest core, orange and cyan light strips, a segmented tail, and a confident strategic stance.",
+      "primaryColor": "#FF7A1A",
+      "secondaryColor": "#171F2A",
+      "accentColor": "#00CFFF",
+      "defaultState": "idle",
+      "supportedStates": [
+        "idle",
+        "thinking",
+        "working",
+        "success",
+        "blocked",
+        "error",
+        "sleeping",
+        "reminding",
+        "learning",
+        "recalling"
+      ],
+      "imagePlaceholderPath": "hermes-pet-agent/assets/miko/spritesheet.webp",
+      "spritePlaceholderPath": "hermes-pet-agent/assets/miko/spritesheet.webp",
+      "artStatus": "final-miko-spritesheet",
+      "referenceArt": {
+        "sourceStatus": "imported",
+        "expectedSourcePath": "reference-art/miko/source.png",
+        "chatImageOrder": 2,
+        "canonicalDesignNotes": [
+          "Dark agile humanoid robot fox with sharp ears and a large segmented tail.",
+          "Orange eyes and core carry the skill-scout identity, with cyan as a secondary circuit accent.",
+          "Keep the stance narrow and quick so Miko feels tactical rather than heavy."
+        ],
+        "sourceImagePath": "reference-art/miko/source.png"
+      },
+      "suggestedAnimationNotes": [
+        "Final Miko v1 spritesheet includes idle, running-right, running-left, waving, jumping, failed, waiting, running, and review rows.",
+        "Hermes learning/recalling states currently map through the shared review fallback.",
+        "Skill discovery can use review or waving until a dedicated skill-scout row exists."
+      ],
+      "useCaseInsideHermes": "Appears when Hermes discovers, creates, or improves a skill."
+    },
+    {
+      "id": "bramble",
+      "name": "Bramble",
+      "animalInspiration": "bear",
+      "hermesRole": "deep work anchor",
+      "personality": "calm, patient, resilient",
+      "shortBio": "Bramble is the companion for long-running work: steady, grounded, and reassuring when a task needs time or recovery.",
+      "visualDescription": "Larger humanoid robot bear deep-work anchor with rounded dark armor, heavier arms, blue eyes, a blue chest core, bronze claw details, broad feet, and a calm grounded posture.",
+      "primaryColor": "#1EA7FF",
+      "secondaryColor": "#202832",
+      "accentColor": "#B8873C",
+      "defaultState": "idle",
+      "supportedStates": [
+        "idle",
+        "thinking",
+        "working",
+        "success",
+        "blocked",
+        "error",
+        "sleeping",
+        "reminding",
+        "learning",
+        "recalling"
+      ],
+      "imagePlaceholderPath": "hermes-pet-agent/assets/bramble/spritesheet.webp",
+      "spritePlaceholderPath": "hermes-pet-agent/assets/bramble/spritesheet.webp",
+      "artStatus": "final-bramble-spritesheet",
+      "referenceArt": {
+        "sourceStatus": "imported",
+        "expectedSourcePath": "reference-art/bramble/source.png",
+        "chatImageOrder": 3,
+        "canonicalDesignNotes": [
+          "Large rounded humanoid robot bear with soft face proportions and heavy arms.",
+          "Blue eyes and core should feel calm and dependable, not aggressive.",
+          "Bronze claws and ring details add weight while preserving a friendly deep-work silhouette."
+        ],
+        "sourceImagePath": "reference-art/bramble/source.png"
+      },
+      "suggestedAnimationNotes": [
+        "Final Bramble v1 spritesheet includes idle, running-right, running-left, waving, jumping, failed, waiting, running, and review rows.",
+        "Long-running work can use waiting/running rows depending on whether Hermes is planning or executing.",
+        "Recovery and error states currently map through failed and idle fallback behavior."
+      ],
+      "useCaseInsideHermes": "Focus mode, long-running work, background execution, recovery after failed tasks."
+    },
+    {
+      "id": "nyx",
+      "name": "Nyx",
+      "animalInspiration": "cat/panther",
+      "hermesRole": "stealth automation companion",
+      "personality": "independent, sharp, quiet confidence",
+      "shortBio": "Nyx represents low-noise automation and fast command execution without stealing focus from the user's desktop.",
+      "visualDescription": "Dark humanoid robot cat/panther stealth automation companion with a smooth shell, violet eyes, a violet chest core, flexible posture, minimal armor, clawed feet, and a quiet segmented tail.",
+      "primaryColor": "#7B4DFF",
+      "secondaryColor": "#111722",
+      "accentColor": "#9D7CFF",
+      "defaultState": "idle",
+      "supportedStates": [
+        "idle",
+        "thinking",
+        "working",
+        "success",
+        "blocked",
+        "error",
+        "sleeping",
+        "reminding",
+        "learning",
+        "recalling"
+      ],
+      "imagePlaceholderPath": "hermes-pet-agent/assets/nyx/spritesheet.webp",
+      "spritePlaceholderPath": "hermes-pet-agent/assets/nyx/spritesheet.webp",
+      "artStatus": "final-nyx-spritesheet",
+      "referenceArt": {
+        "sourceStatus": "imported",
+        "expectedSourcePath": "reference-art/nyx/source.png",
+        "chatImageOrder": 4,
+        "canonicalDesignNotes": [
+          "Sleek dark humanoid robot cat/panther with smooth armor and purple light language.",
+          "Violet eyes and core should be the strongest visual signal.",
+          "Tail and posture should communicate quiet automation, not playful mascot behavior."
+        ],
+        "sourceImagePath": "reference-art/nyx/source.png"
+      },
+      "suggestedAnimationNotes": [
+        "Final Nyx v1 spritesheet includes idle, running-right, running-left, waving, jumping, failed, waiting, running, and review rows.",
+        "Silent automation can use running/waiting rows with low-noise Hermes notifications.",
+        "Success currently maps through the shared overlay fallback until a dedicated quiet-complete row exists."
+      ],
+      "useCaseInsideHermes": "Silent automation, background tasks, quick command execution."
+    },
+    {
+      "id": "pip",
+      "name": "Pip",
+      "animalInspiration": "rabbit",
+      "hermesRole": "reminder/check-in companion",
+      "personality": "fast, upbeat, curious",
+      "shortBio": "Pip handles quick nudges, routine check-ins, and lightweight reminders with bright but restrained energy.",
+      "visualDescription": "Smaller humanoid robot rabbit reminder companion with long mechanical ears, green eyes, a green chest core, spring-like legs, yellow joint accents, friendly expression, and quick upright posture.",
+      "primaryColor": "#2FE6B7",
+      "secondaryColor": "#202936",
+      "accentColor": "#F2B300",
+      "defaultState": "idle",
+      "supportedStates": [
+        "idle",
+        "thinking",
+        "working",
+        "success",
+        "blocked",
+        "error",
+        "sleeping",
+        "reminding",
+        "learning",
+        "recalling"
+      ],
+      "imagePlaceholderPath": "hermes-pet-agent/assets/pip/spritesheet.webp",
+      "spritePlaceholderPath": "hermes-pet-agent/assets/pip/spritesheet.webp",
+      "artStatus": "final-pip-spritesheet",
+      "referenceArt": {
+        "sourceStatus": "imported",
+        "expectedSourcePath": "reference-art/pip/source.png",
+        "chatImageOrder": 5,
+        "canonicalDesignNotes": [
+          "Small upbeat humanoid robot rabbit with tall mechanical ears and spring-like lower legs.",
+          "Green eyes and core make reminders feel fresh and friendly.",
+          "Yellow accent joints should stay secondary and support the quick-check-in personality."
+        ],
+        "sourceImagePath": "reference-art/pip/source.png"
+      },
+      "suggestedAnimationNotes": [
+        "Final Pip v1 spritesheet includes idle, running-right, running-left, waving, jumping, failed, waiting, running, and review rows.",
+        "Reminding maps cleanly to waving for quick check-ins and lightweight nudges.",
+        "Future dedicated reminder rows can add ear-perk timing without changing the shared state model."
+      ],
+      "useCaseInsideHermes": "Reminders, quick check-ins, daily routines, lightweight nudges."
+    },
+    {
+      "id": "atlas",
+      "name": "Atlas",
+      "animalInspiration": "owl/eagle",
+      "hermesRole": "memory and insight companion",
+      "personality": "observant, analytical, mentor-like",
+      "shortBio": "Atlas surfaces memory, context, summaries, and recommendations when Hermes needs to reason from past work.",
+      "visualDescription": "Humanoid robot owl/eagle memory companion with wing-like shoulder panels, blue eyes, a blue chest core, gold beak and trim, clawed feet, and an observant mentor-like posture.",
+      "primaryColor": "#2EA8FF",
+      "secondaryColor": "#182436",
+      "accentColor": "#D8A238",
+      "defaultState": "idle",
+      "supportedStates": [
+        "idle",
+        "thinking",
+        "working",
+        "success",
+        "blocked",
+        "error",
+        "sleeping",
+        "reminding",
+        "learning",
+        "recalling"
+      ],
+      "imagePlaceholderPath": "hermes-pet-agent/assets/atlas/spritesheet.webp",
+      "spritePlaceholderPath": "hermes-pet-agent/assets/atlas/spritesheet.webp",
+      "artStatus": "final-atlas-spritesheet",
+      "referenceArt": {
+        "sourceStatus": "imported",
+        "expectedSourcePath": "reference-art/atlas/source.png",
+        "chatImageOrder": 6,
+        "canonicalDesignNotes": [
+          "Humanoid robot bird that reads between owl and eagle through eyes, beak, shoulders, and talons.",
+          "Blue eyes and core communicate memory/insight while gold trim gives Atlas a mentor signal.",
+          "Wing-like shoulder panels should animate for recalling without becoming full wings."
+        ],
+        "sourceImagePath": "reference-art/atlas/source.png"
+      },
+      "suggestedAnimationNotes": [
+        "Final Atlas v1 spritesheet includes idle, running-right, running-left, waving, jumping, failed, waiting, running, and review rows.",
+        "Recalling and learning currently map through review until dedicated memory-insight rows exist.",
+        "Memory summaries can use waiting/review depending on whether Hermes is gathering context or presenting insight."
+      ],
+      "useCaseInsideHermes": "Memory recall, summaries, progress reports, recommendations."
+    }
+  ]
+}

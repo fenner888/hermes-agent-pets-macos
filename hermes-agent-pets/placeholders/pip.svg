@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Pip placeholder">
+  <rect width="320" height="320" rx="28" fill="#283040"/>
+  <rect x="104" y="28" width="36" height="106" rx="18" fill="#FFB3D1"/>
+  <rect x="180" y="28" width="36" height="106" rx="18" fill="#FFB3D1"/>
+  <rect x="90" y="92" width="140" height="118" rx="46" fill="#FFB3D1"/>
+  <rect x="112" y="134" width="96" height="54" rx="24" fill="#121A24"/>
+  <circle cx="138" cy="162" r="9" fill="#8CFF72"/>
+  <circle cx="182" cy="162" r="9" fill="#8CFF72"/>
+  <path d="M120 228h80l28 48H92Z" fill="#FFB3D1"/>
+  <path d="M120 248h80" stroke="#8CFF72" stroke-width="8" stroke-linecap="round"/>
+  <text x="160" y="304" text-anchor="middle" font-family="Menlo, monospace" font-size="22" fill="#FFF0F7">PIP</text>
+</svg>

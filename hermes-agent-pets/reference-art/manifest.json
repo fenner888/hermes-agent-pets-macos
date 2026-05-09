@@ -1,0 +1,55 @@
+{
+  "schema": "hermes.agent_pet.reference_art.v1",
+  "version": 1,
+  "sourceStatus": "fully-imported",
+  "entries": [
+    {
+      "id": "koda",
+      "chatImageOrder": 1,
+      "expectedSourcePath": "reference-art/koda/source.png",
+      "designSummary": "Humanoid robot wolf/dog goal guardian with dark gunmetal armor, tall ears, amber eyes, amber chest core, compact heroic stance, and small blue LED accents.",
+      "sourceStatus": "imported",
+      "sourceImagePath": "reference-art/koda/source.png"
+    },
+    {
+      "id": "miko",
+      "chatImageOrder": 2,
+      "expectedSourcePath": "reference-art/miko/source.png",
+      "designSummary": "Humanoid robot fox skill scout with sharp ears, slim agile armor, orange eyes/core, orange and cyan light strips, and a confident strategic stance.",
+      "sourceStatus": "imported",
+      "sourceImagePath": "reference-art/miko/source.png"
+    },
+    {
+      "id": "bramble",
+      "chatImageOrder": 3,
+      "expectedSourcePath": "reference-art/bramble/source.png",
+      "designSummary": "Humanoid robot bear deep-work anchor with larger rounded armor, blue eyes/core, bronze claws, heavy arms, and calm grounded posture.",
+      "sourceStatus": "imported",
+      "sourceImagePath": "reference-art/bramble/source.png"
+    },
+    {
+      "id": "nyx",
+      "chatImageOrder": 4,
+      "expectedSourcePath": "reference-art/nyx/source.png",
+      "designSummary": "Humanoid robot cat/panther stealth automation companion with smooth dark armor, violet eyes/core, flexible posture, and minimal low-noise detailing.",
+      "sourceStatus": "imported",
+      "sourceImagePath": "reference-art/nyx/source.png"
+    },
+    {
+      "id": "pip",
+      "chatImageOrder": 5,
+      "expectedSourcePath": "reference-art/pip/source.png",
+      "designSummary": "Humanoid robot rabbit reminder companion with long mechanical ears, compact upbeat proportions, green eyes/core, spring-like legs, and friendly expression.",
+      "sourceStatus": "imported",
+      "sourceImagePath": "reference-art/pip/source.png"
+    },
+    {
+      "id": "atlas",
+      "chatImageOrder": 6,
+      "expectedSourcePath": "reference-art/atlas/source.png",
+      "designSummary": "Humanoid robot owl/eagle memory companion with wing-like shoulder panels, blue eyes/core, gold beak and trim, and observant mentor-like posture.",
+      "sourceStatus": "imported",
+      "sourceImagePath": "reference-art/atlas/source.png"
+    }
+  ]
+}

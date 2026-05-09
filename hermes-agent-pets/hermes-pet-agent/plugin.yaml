@@ -1,0 +1,7 @@
+name: hermes-pet-agent
+version: 1.0.0
+description: "Agent-native Hermes pet companion with wake/sleep, tool reactions, stop-sign warnings, and deletion approvals."
+author: "Hermes Agent Pets"
+hooks:
+  - pre_tool_call
+  - post_tool_call

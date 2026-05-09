@@ -1,0 +1,36 @@
+name: Custom pet proposal
+description: Propose a public starter companion or custom pet workflow improvement.
+title: "[Custom Pet]: "
+labels: ["custom-pet"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not submit private/personal character assets. Only propose assets you have the right to share publicly.
+  - type: input
+    id: pet_name
+    attributes:
+      label: Pet name
+    validations:
+      required: true
+  - type: textarea
+    id: role
+    attributes:
+      label: Hermes role and use case
+      description: What should this companion represent inside Hermes?
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Visual direction
+      description: Describe the humanoid robot animal-inspired design.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Asset provenance/license
+      description: Where did the art come from, and can it be redistributed under this repo's license?
+    validations:
+      required: true

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Koda placeholder">
+  <rect width="320" height="320" rx="28" fill="#263143"/>
+  <path d="M96 92 126 44l34 42 34-42 30 48v74H96Z" fill="#7BA7FF"/>
+  <rect x="108" y="128" width="104" height="82" rx="24" fill="#101722"/>
+  <circle cx="136" cy="158" r="10" fill="#65F0B7"/>
+  <circle cx="184" cy="158" r="10" fill="#65F0B7"/>
+  <path d="M116 232h88l22 48H94Z" fill="#7BA7FF"/>
+  <path d="M102 246h116" stroke="#65F0B7" stroke-width="8" stroke-linecap="round"/>
+  <text x="160" y="304" text-anchor="middle" font-family="Menlo, monospace" font-size="22" fill="#EAF4FF">KODA</text>
+</svg>

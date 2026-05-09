@@ -1,0 +1,8 @@
+.venv/
+hatch-runs/
+build/
+character-sets/*/sprites/
+assets/*/*contact-proof*.png
+__pycache__/
+*.pyc
+.DS_Store

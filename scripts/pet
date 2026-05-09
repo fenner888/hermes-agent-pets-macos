@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+hermes_pet="$root/scripts/hermes-pet"
+
+case "${1:-wake}" in
+  wake|"")
+    "$hermes_pet" wake
+    ;;
+  sleep)
+    "$hermes_pet" sleep
+    ;;
+  unlock|move)
+    "$hermes_pet" unlock
+    ;;
+  lock)
+    "$hermes_pet" lock
+    ;;
+  stop-sign|stopplease|halt)
+    "$hermes_pet" stop-sign
+    ;;
+  start)
+    "$hermes_pet" wake
+    ;;
+  stop)
+    "$hermes_pet" stop
+    ;;
+  status)
+    "$hermes_pet" status
+    ;;
+  idle|running|review|failed|waiting|waving|jumping|running-left|running-right|success|dancing)
+    "$hermes_pet" "$1"
+    ;;
+  *)
+    cat <<'USAGE'
+usage:
+  pet
+  pet wake
+  pet sleep
+  pet unlock
+  pet lock
+  pet stop-sign
+  pet status
+  pet <idle|running|review|failed|waiting|waving|jumping|success|dancing>
+USAGE
+    ;;
+esac

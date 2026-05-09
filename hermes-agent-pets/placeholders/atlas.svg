@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Atlas placeholder">
+  <rect width="320" height="320" rx="28" fill="#202638"/>
+  <path d="M70 108 122 58h76l52 50-40 98H110Z" fill="#C7D2FF"/>
+  <path d="M72 138h58l-42 90Z" fill="#8B99D8"/>
+  <path d="M248 138h-58l42 90Z" fill="#8B99D8"/>
+  <rect x="112" y="118" width="96" height="58" rx="22" fill="#111827"/>
+  <path d="M130 148h60" stroke="#F6D365" stroke-width="10" stroke-linecap="round"/>
+  <path d="M118 224h84l24 48H94Z" fill="#C7D2FF"/>
+  <path d="M118 244h84" stroke="#F6D365" stroke-width="8" stroke-linecap="round"/>
+  <text x="160" y="304" text-anchor="middle" font-family="Menlo, monospace" font-size="22" fill="#F5F7FF">ATLAS</text>
+</svg>

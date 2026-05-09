@@ -1,0 +1,6 @@
+{
+  "id": "pip",
+  "displayName": "Pip",
+  "description": "Hermes reminder check-in companion.",
+  "spritesheetPath": "spritesheet.webp"
+}

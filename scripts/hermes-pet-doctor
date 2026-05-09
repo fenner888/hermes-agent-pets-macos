@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+"""Run local macOS Hermes pet release checks."""
+
+from __future__ import annotations
+
+import argparse
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def line(kind: str, label: str, detail: str) -> None:
+    print(f"{kind:4} {label}: {detail}")
+
+
+def check_file(path: Path, label: str, failures: list[str]) -> None:
+    if path.is_file():
+        line("ok", label, str(path))
+    else:
+        failures.append(label)
+        line("fail", label, f"missing {path}")
+
+
+def run_command(cmd: list[str], cwd: Path) -> tuple[bool, str]:
+    try:
+        result = subprocess.run(cmd, cwd=str(cwd), check=False, capture_output=True, text=True)
+    except Exception as exc:
+        return False, str(exc)
+    output = (result.stdout + result.stderr).strip()
+    return result.returncode == 0, output
+
+
+def check_character_sets(root: Path, failures: list[str]) -> None:
+    validator = root / "scripts" / "validate-hermes-pet.py"
+    character_root = root / "character-sets"
+    packages = [item for item in sorted(character_root.iterdir()) if (item / "character.json").is_file()] if character_root.is_dir() else []
+    if not packages:
+        failures.append("character sets")
+        line("fail", "character sets", "none found")
+        return
+    for package in packages:
+        ok, output = run_command([sys.executable, str(validator), str(package), "--quiet"], root)
+        if ok:
+            line("ok", f"character {package.name}", str(package))
+        else:
+            failures.append(f"character {package.name}")
+            line("fail", f"character {package.name}", output or "validation failed")
+
+
+def check_companion_roster(root: Path, failures: list[str], warnings: list[str]) -> None:
+    validator = root / "scripts" / "validate-hermes-companions.py"
+    roster = root / "hermes-agent-pets" / "companions.json"
+    check_file(validator, "companion roster validator", failures)
+    check_file(roster, "companion roster", failures)
+    if not validator.is_file() or not roster.is_file():
+        return
+    ok, output = run_command([sys.executable, str(validator), str(roster), "--quiet"], root)
+    if ok:
+        line("ok", "companion roster validation", str(roster))
+    else:
+        failures.append("companion roster validation")
+        line("fail", "companion roster validation", output or "validation failed")
+    if output and "warning:" in output:
+        warnings.append("companion roster placeholders")
+
+
+def check_no_generated_files(root: Path, failures: list[str]) -> None:
+    release_root = root / "hermes-agent-pets"
+    bad_names = {"__pycache__", "build", "hatch-runs", ".venv", ".DS_Store"}
+    bad_paths = []
+    if release_root.is_dir():
+        for item in release_root.rglob("*"):
+            if item.name in bad_names or item.suffix == ".pyc":
+                bad_paths.append(item)
+    if bad_paths:
+        failures.append("release folder cleanliness")
+        line("fail", "release folder cleanliness", ", ".join(str(path) for path in bad_paths[:5]))
+    else:
+        line("ok", "release folder cleanliness", str(release_root))
+
+
+def check_no_local_path_regressions(root: Path, failures: list[str]) -> None:
+    local_repo_path = str(Path.home() / "Documents" / "Pet")
+    checks = [
+        (root / "hermes-agent-pets", local_repo_path, set()),
+        (root / "docs", local_repo_path, set()),
+        (
+            root / "scripts",
+            local_repo_path,
+            {
+                root / "scripts" / "hermes-pet-doctor",
+                root / "scripts" / "test-hermes-agent-pet.py",
+            },
+        ),
+        (root / "scripts", str(Path.home() / ".codex" / "generated_images"), {root / "scripts" / "hermes-pet-doctor"}),
+    ]
+    for path, needle, allowed in checks:
+        files = [path] if path.is_file() else [item for item in path.rglob("*") if item.is_file()]
+        matches = []
+        for file_path in files:
+            if file_path in allowed:
+                continue
+            if "__pycache__" in file_path.parts or file_path.suffix == ".pyc":
+                continue
+            try:
+                if needle in file_path.read_text(encoding="utf-8", errors="ignore"):
+                    matches.append(file_path)
+            except OSError:
+                continue
+        if matches:
+            failures.append(f"local path regression {needle}")
+            line("fail", "local path regression", f"{needle} in {matches[0]}")
+        else:
+            label = str(path.relative_to(root)) if path != root else "."
+            line("ok", "local path regression", f"no {needle} in {label}")
+
+
+def check_overlay(root: Path, build: bool, failures: list[str], warnings: list[str]) -> None:
+    build_script = root / "scripts" / "hermes-pet-overlay" / "build.sh"
+    check_file(build_script, "overlay build script", failures)
+    if build:
+        ok, output = run_command([str(build_script)], root)
+        if ok:
+            line("ok", "overlay build", output.splitlines()[-1] if output else "built")
+        else:
+            failures.append("overlay build")
+            line("fail", "overlay build", output or "failed")
+            return
+
+    overlay = root / "build" / "HermesPetOverlay.app" / "Contents" / "MacOS" / "hermes-pet-overlay"
+    if overlay.is_file() and os.access(overlay, os.X_OK):
+        line("ok", "overlay executable", str(overlay))
+    else:
+        warnings.append("overlay executable")
+        line("warn", "overlay executable", f"not built yet: {overlay}")
+
+    resource_spritesheet = root / "build" / "HermesPetOverlay.app" / "Contents" / "Resources" / "koda" / "spritesheet.webp"
+    if resource_spritesheet.is_file():
+        line("ok", "overlay bundled spritesheet", str(resource_spritesheet))
+    else:
+        warnings.append("overlay bundled spritesheet")
+        line("warn", "overlay bundled spritesheet", "run scripts/hermes-pet-overlay/build.sh")
+
+
+def check_plugin(root: Path, failures: list[str]) -> None:
+    plugin = root / "hermes-agent-pets" / "hermes-pet-agent"
+    check_file(plugin / "plugin.yaml", "plugin manifest", failures)
+    check_file(plugin / "__init__.py", "plugin code", failures)
+    check_file(plugin / "assets" / "koda" / "pet.json", "plugin pet.json", failures)
+    check_file(plugin / "assets" / "koda" / "spritesheet.webp", "plugin spritesheet", failures)
+
+
+def check_state_dir(warnings: list[str]) -> None:
+    state_dir = Path.home() / ".hermes" / "hermes-pet-agent"
+    parent = state_dir if state_dir.exists() else state_dir.parent
+    if parent.exists() and os.access(parent, os.R_OK | os.W_OK):
+        line("ok", "Hermes state path", str(state_dir))
+    else:
+        warnings.append("Hermes state path")
+        line("warn", "Hermes state path", f"not writable yet: {state_dir}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--build", action="store_true", help="Build the macOS overlay before checking it.")
+    args = parser.parse_args()
+
+    root = repo_root()
+    failures: list[str] = []
+    warnings: list[str] = []
+    print("Hermes pet doctor")
+    print(f"repo: {root}")
+
+    check_character_sets(root, failures)
+    check_companion_roster(root, failures, warnings)
+    check_plugin(root, failures)
+    check_overlay(root, args.build, failures, warnings)
+    check_no_generated_files(root, failures)
+    check_no_local_path_regressions(root, failures)
+    check_state_dir(warnings)
+
+    print()
+    if failures:
+        print(f"Doctor result: failed ({len(failures)} issue(s), {len(warnings)} warning(s)).")
+        return 1
+    if warnings:
+        print(f"Doctor result: ready with {len(warnings)} warning(s).")
+        return 0
+    print("Doctor result: ready.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

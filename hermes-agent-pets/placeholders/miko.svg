@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Miko placeholder">
+  <rect width="320" height="320" rx="28" fill="#232834"/>
+  <path d="M84 104 122 40l38 58 38-58 38 64-34 94H118Z" fill="#FF8F4D"/>
+  <rect x="108" y="126" width="104" height="76" rx="30" fill="#111827"/>
+  <path d="M130 158h24M166 158h24" stroke="#39D7FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M94 226h132l-28 52h-76Z" fill="#FF8F4D"/>
+  <path d="M122 238c20 18 56 18 76 0" stroke="#39D7FF" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <text x="160" y="304" text-anchor="middle" font-family="Menlo, monospace" font-size="22" fill="#FFF3EA">MIKO</text>
+</svg>

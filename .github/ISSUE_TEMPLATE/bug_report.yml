@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible macOS Hermes Agent Pets bug.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please avoid including private terminal output, private local paths, or private character assets unless necessary.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Exact commands or `/pet` actions that reproduce the issue.
+      placeholder: |
+        1. Run ...
+        2. Run /pet ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: macOS version, Hermes version, install method, shell, terminal app.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation output
+      description: Paste relevant output from `scripts/hermes-pet-doctor --build` or `scripts/test-hermes-agent-pet.py`.

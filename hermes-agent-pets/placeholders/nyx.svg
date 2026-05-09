@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Nyx placeholder">
+  <rect width="320" height="320" rx="28" fill="#151821"/>
+  <path d="M96 102 122 48l38 40 38-40 26 54-20 100H116Z" fill="#6E7BFF"/>
+  <rect x="112" y="126" width="96" height="68" rx="32" fill="#080B10"/>
+  <path d="M132 158h24M164 158h24" stroke="#B4FFEA" stroke-width="8" stroke-linecap="round"/>
+  <path d="M108 224h104l34 44H126Z" fill="#6E7BFF"/>
+  <path d="M218 236c42 6 42 46 2 46" stroke="#B4FFEA" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <text x="160" y="304" text-anchor="middle" font-family="Menlo, monospace" font-size="22" fill="#E7EAFF">NYX</text>
+</svg>

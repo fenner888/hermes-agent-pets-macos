@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+overlay="$root/build/HermesPetOverlay.app/Contents/MacOS/hermes-pet-overlay"
+state_file="${HERMES_PET_STATE_FILE:-/tmp/hermes-pet-overlay-state}"
+awake_file="${HERMES_PET_AWAKE_FILE:-/tmp/hermes-pet-overlay-awake}"
+mode_file="${HERMES_PET_MODE_FILE:-/tmp/hermes-pet-overlay-mode}"
+
+if [[ ! -x "$overlay" ]]; then
+  "$root/scripts/hermes-pet-overlay/build.sh" >/dev/null
+fi
+
+case "${1:-}" in
+  wake)
+    touch "$awake_file"
+    open "$root/build/HermesPetOverlay.app" >/dev/null 2>&1 || true
+    "$overlay" --send "waving" --state-file "$state_file"
+    ;;
+  sleep)
+    rm -f "$awake_file"
+    "$overlay" --send "idle" --state-file "$state_file" 2>/dev/null || true
+    ;;
+  unlock|move)
+    touch "$awake_file"
+    open "$root/build/HermesPetOverlay.app" >/dev/null 2>&1 || true
+    "$overlay" --mode "unlock" --mode-file "$mode_file"
+    "$overlay" --send "waving" --state-file "$state_file"
+    echo "Hermes pet is unlocked. Drag him, then run: pet lock"
+    ;;
+  lock)
+    "$overlay" --mode "lock" --mode-file "$mode_file"
+    echo "Hermes pet is locked and click-through."
+    ;;
+  stop-sign|stopplease|halt)
+    touch "$awake_file"
+    open "$root/build/HermesPetOverlay.app" >/dev/null 2>&1 || true
+    "$overlay" --send "stop-sign" --state-file "$state_file"
+    ;;
+  confirm-delete)
+    if [[ -z "${2:-}" ]]; then
+      echo "usage: scripts/hermes-pet confirm-delete <decision-file>" >&2
+      exit 2
+    fi
+    if [[ ! -f "$awake_file" ]]; then
+      exit 0
+    fi
+    open "$root/build/HermesPetOverlay.app" >/dev/null 2>&1 || true
+    "$overlay" --send "confirm-delete $2" --state-file "$state_file"
+    ;;
+  start)
+    open "$root/build/HermesPetOverlay.app" >/dev/null 2>&1 || true
+    ;;
+  stop)
+    rm -f "$awake_file"
+    pkill -f "$overlay" 2>/dev/null || true
+    ;;
+  status)
+    if [[ -f "$awake_file" ]]; then
+      if [[ -f "$mode_file" ]] && grep -q '^unlock' "$mode_file"; then
+        echo "Hermes pet is awake and unlocked"
+      else
+        echo "Hermes pet is awake and locked"
+      fi
+    else
+      echo "Hermes pet is asleep"
+    fi
+    ;;
+  state)
+    if [[ -z "${2:-}" ]]; then
+      echo "usage: scripts/hermes-pet state <idle|running|review|failed|waiting|waving|jumping|success|dancing>" >&2
+      exit 2
+    fi
+    if [[ ! -f "$awake_file" ]]; then
+      exit 0
+    fi
+    "$overlay" --send "$2" --state-file "$state_file"
+    ;;
+  idle|running|review|failed|waiting|waving|jumping|running-left|running-right|success|dancing)
+    if [[ ! -f "$awake_file" ]]; then
+      exit 0
+    fi
+    "$overlay" --send "$1" --state-file "$state_file"
+    ;;
+  *)
+    cat <<'USAGE'
+usage:
+  scripts/hermes-pet wake
+  scripts/hermes-pet sleep
+  scripts/hermes-pet unlock
+  scripts/hermes-pet lock
+  scripts/hermes-pet stop-sign
+  scripts/hermes-pet confirm-delete <decision-file>
+  scripts/hermes-pet start
+  scripts/hermes-pet stop
+  scripts/hermes-pet status
+  scripts/hermes-pet <idle|running|review|failed|waiting|waving|jumping|success|dancing>
+  scripts/hermes-pet state <state>
+USAGE
+    ;;
+esac
