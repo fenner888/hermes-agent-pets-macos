@@ -1,5 +1,7 @@
 # macOS Hermes Agent Pets
 
+![Hermes Agent Pets lineup: Atlas, Bramble, Koda, Miko, Nyx, and Pip](docs/assets/hermes-agent-pets-lineup.jpg)
+
 Native macOS desktop companions for Hermes Agent.
 
 The public starter set includes Koda, Miko, Bramble, Nyx, Pip, and Atlas: small humanoid robot animal companions that react to `/pet` commands, Hermes tool activity, stop-sign warnings, deletion confirmations, and agent state changes. Personal/private characters are intentionally not included in this public repo.
