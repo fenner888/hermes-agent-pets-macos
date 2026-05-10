@@ -156,7 +156,7 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
         for display_name in ("Koda", "Miko", "Bramble", "Nyx", "Pip", "Atlas"):
             require(display_name in companions, f"companions roster did not render {display_name}")
         for companion_id in PACKAGED_COMPANIONS:
-            require(companion_id in companions and "usable" in companions, f"companions roster did not mark {companion_id} as usable")
+            require(companion_id in companions and "available" in companions, f"companions roster did not mark {companion_id} as available")
             switched = plugin._handle_pet(f"companion {companion_id}")
             require(f"pet: {companion_id}" in switched, f"companion switch did not activate {companion_id}")
             require(plugin._load()["active_pet"] == companion_id, f"companion switch did not persist {companion_id}")

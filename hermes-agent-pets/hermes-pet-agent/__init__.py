@@ -793,17 +793,15 @@ def _companion_roster_card() -> str:
     lines = [
         "Hermes companions",
         f"active: {_pet_display_name(active_pet)} ({active_pet})",
-        f"states: {', '.join(HermesPetStateManager.supported_states)}",
         "",
     ]
     for item in companions:
         companion_id = str(item.get("id") or "?")
         name = str(item.get("name") or companion_id)
         role = str(item.get("hermesRole") or "companion")
-        art_status = str(item.get("artStatus") or "unknown art")
-        usable = "usable" if _pet_is_packaged(companion_id) else "reference"
+        availability = "available" if _pet_is_packaged(companion_id) else "reference only"
         marker = " [active]" if companion_id == active_pet else ""
-        lines.append(f"- {name} ({companion_id}): {role}; art: {art_status}; {usable}{marker}")
+        lines.append(f"- {name} ({companion_id}) - {role}; {availability}{marker}")
     lines.append("")
     lines.append("Use /pet companion <id> to switch to a packaged companion.")
     return "\n".join(lines)
