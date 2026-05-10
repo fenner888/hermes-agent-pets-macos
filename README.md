@@ -10,6 +10,32 @@ Today, every included companion uses the same shared Hermes pet behavior. The co
 
 The companion roster is centralized in `hermes-agent-pets/companions.json`. The installable Hermes plugin lives in `hermes-agent-pets/hermes-pet-agent`.
 
+## What Works Today
+
+- Pick one of six bundled companions: Koda, Miko, Bramble, Nyx, Pip, or Atlas.
+- Wake, sleep, switch, and check the active companion from Hermes with `/pet`.
+- Show the pet in the native macOS overlay.
+- React to Hermes activity with shared states such as idle, thinking, working, success, blocked, and error.
+- Show stop-sign and deletion-confirmation flows with each bundled companion.
+- Update by rerunning the installer.
+
+## Included Companions
+
+Koda is the default companion after install.
+
+- Koda (`koda`): theme: goal guardian
+- Miko (`miko`): theme: skill scout
+- Bramble (`bramble`): theme: deep work anchor
+- Nyx (`nyx`): theme: stealth automation companion
+- Pip (`pip`): theme: reminder/check-in companion
+- Atlas (`atlas`): theme: memory and insight companion
+
+## Not Live Yet
+
+The role labels are currently character themes, not separate automation systems. For example, Koda is themed as a goal guardian and Atlas is themed as a memory and insight companion, but this release does not yet give each pet its own independent job, memory system, reminder system, or skill workflow.
+
+Audio-reactive dancing is also not part of the bundled starter assets yet. The command exists for future pets that include dance strips, but the current starter set may report dance as unavailable.
+
 ## Quick Start
 
 Fast install from a terminal:
@@ -23,12 +49,8 @@ Restart Hermes after installing the plugin, then run:
 ```text
 /pet wake
 /pet companions
-/pet companion koda
-/pet companion miko
-/pet companion bramble
-/pet companion nyx
-/pet companion pip
 /pet companion atlas
+/pet status
 ```
 
 ## Updating
@@ -44,7 +66,7 @@ Then restart Hermes Agent. The installer replaces the existing
 
 Inside Hermes, `/pet update` prints the same update instructions.
 
-## Choosing a Pet
+## Pet Commands
 
 Inside Hermes, use `/pet companions` to see the available starter companions and
 which one is active:
@@ -70,8 +92,21 @@ Check the current active pet and state with:
 /pet status
 ```
 
+Other useful commands:
+
+```text
+/pet wake
+/pet sleep
+/pet update
+/pet stop-sign
+/pet approve <code>
+/pet cancel <code>
+```
+
 The current release uses Hermes commands for listing and selecting pets. It does
-not include a Codex-style visual pet picker yet.
+not include a visual pet picker yet.
+
+## Development Install
 
 Manual install from a cloned repo:
 
@@ -81,13 +116,6 @@ scripts/validate-hermes-companions.py
 scripts/hermes-pet-overlay/build.sh
 scripts/hermes-pet-doctor --build
 scripts/install-hermes-agent-pet.sh
-```
-
-Audio-reactive dancing is optional and off by default:
-
-```text
-/pet dance on
-/pet dance off
 ```
 
 ## Requirements
