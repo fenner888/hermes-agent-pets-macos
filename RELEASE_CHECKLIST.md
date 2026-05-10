@@ -28,6 +28,16 @@ Confirm each public starter pet has:
 scripts/install-hermes-agent-pet.sh
 ```
 
+Confirm the public one-line installer still works against a temp plugin directory before publishing:
+
+```bash
+git archive --format=tar.gz --output=/tmp/hermes-agent-pets-macos.tar.gz HEAD
+HERMES_PLUGIN_DIR=/tmp/hermes-plugin-test \
+  HERMES_AGENT_PETS_TARBALL_URL=file:///tmp/hermes-agent-pets-macos.tar.gz \
+  bash install.sh
+scripts/test-hermes-agent-pet.py --plugin /tmp/hermes-plugin-test/hermes-pet-agent
+```
+
 Expected package:
 
 ```text

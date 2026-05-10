@@ -8,14 +8,10 @@ The companion roster is centralized in `hermes-agent-pets/companions.json`. The 
 
 ## Quick Start
 
-From the repo root:
+Fast install from a terminal:
 
 ```bash
-scripts/validate-hermes-pet.py character-sets/koda
-scripts/validate-hermes-companions.py
-scripts/hermes-pet-overlay/build.sh
-scripts/hermes-pet-doctor --build
-scripts/install-hermes-agent-pet.sh
+curl -fsSL https://raw.githubusercontent.com/fenner888/hermes-agent-pets-macos/main/install.sh | bash
 ```
 
 Restart Hermes after installing the plugin, then run:
@@ -29,6 +25,16 @@ Restart Hermes after installing the plugin, then run:
 /pet companion nyx
 /pet companion pip
 /pet companion atlas
+```
+
+Manual install from a cloned repo:
+
+```bash
+scripts/validate-hermes-pet.py character-sets/koda
+scripts/validate-hermes-companions.py
+scripts/hermes-pet-overlay/build.sh
+scripts/hermes-pet-doctor --build
+scripts/install-hermes-agent-pet.sh
 ```
 
 Audio-reactive dancing is optional and off by default:

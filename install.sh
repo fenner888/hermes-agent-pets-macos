@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo="fenner888/hermes-agent-pets-macos"
+ref="${HERMES_AGENT_PETS_REF:-main}"
+tarball_url="${HERMES_AGENT_PETS_TARBALL_URL:-https://github.com/$repo/archive/refs/heads/$ref.tar.gz}"
+tmp_root="$(mktemp -d "${TMPDIR:-/tmp}/hermes-agent-pets-install.XXXXXX")"
+
+cleanup() {
+  rm -rf "$tmp_root"
+}
+trap cleanup EXIT
+
+need() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "missing required command: $1" >&2
+    exit 1
+  fi
+}
+
+need curl
+need tar
+need python3
+
+archive="$tmp_root/hermes-agent-pets.tar.gz"
+echo "Downloading Hermes Agent Pets for macOS..."
+curl -fsSL "$tarball_url" -o "$archive"
+
+tar -xzf "$archive" -C "$tmp_root"
+repo_dir="$(find "$tmp_root" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+if [[ -z "$repo_dir" || ! -x "$repo_dir/scripts/install-hermes-agent-pet.sh" ]]; then
+  echo "downloaded archive did not contain the Hermes Agent Pets installer" >&2
+  exit 1
+fi
+
+cd "$repo_dir"
+scripts/install-hermes-agent-pet.sh
+
+cat <<'EOF'
+
+Hermes Agent Pets installed.
+
+Next:
+1. Restart Hermes Agent.
+2. Run /pet wake.
+3. Run /pet companions.
+EOF
