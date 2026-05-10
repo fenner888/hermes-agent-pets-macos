@@ -16,6 +16,55 @@ Set HERMES_PLUGIN_DIR to rehearse or install somewhere else.
 USAGE
 }
 
+enable_live_plugin_config() {
+  local config_file="$HOME/.hermes/config.yaml"
+
+  if [[ "${HERMES_PLUGIN_DIR:-}" != "" ]]; then
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$config_file")"
+  if [[ ! -f "$config_file" ]]; then
+    {
+      echo "plugins:"
+      echo "  enabled:"
+      echo "  - $plugin_name"
+    } >"$config_file"
+    return 0
+  fi
+
+  if grep -Eq "^[[:space:]]*-[[:space:]]*$plugin_name[[:space:]]*$" "$config_file"; then
+    return 0
+  fi
+
+  python3 - "$config_file" "$plugin_name" <<'PY'
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+config = Path(sys.argv[1])
+plugin = sys.argv[2]
+lines = config.read_text(encoding="utf-8").splitlines()
+
+plugins_index = next((i for i, line in enumerate(lines) if line == "plugins:"), None)
+if plugins_index is None:
+    lines.extend(["plugins:", "  enabled:", f"  - {plugin}"])
+else:
+    next_top = next((i for i in range(plugins_index + 1, len(lines)) if lines[i] and not lines[i].startswith((" ", "\t", "#"))), len(lines))
+    enabled_index = next((i for i in range(plugins_index + 1, next_top) if lines[i].strip() == "enabled:"), None)
+    if enabled_index is None:
+        lines[plugins_index + 1:plugins_index + 1] = ["  enabled:", f"  - {plugin}"]
+    else:
+        insert_at = enabled_index + 1
+        while insert_at < next_top and (lines[insert_at].startswith("  - ") or not lines[insert_at].strip()):
+            insert_at += 1
+        lines.insert(insert_at, f"  - {plugin}")
+
+config.write_text("\n".join(lines) + "\n", encoding="utf-8")
+PY
+}
+
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   usage
   exit 0
@@ -86,6 +135,7 @@ fi
 find "$plugin_dest" \
   \( -name '.DS_Store' -o -name '__pycache__' -o -name '*.pyc' \) \
   -exec rm -rf {} +
+enable_live_plugin_config
 echo "installed $plugin_name"
 echo "$plugin_dest"
 echo "restart Hermes, then run /pet wake"
