@@ -27,6 +27,35 @@ Restart Hermes after installing the plugin, then run:
 /pet companion atlas
 ```
 
+## Choosing a Pet
+
+Inside Hermes, use `/pet companions` to see the available starter companions and
+which one is active:
+
+```text
+/pet companions
+```
+
+Switch to any included companion with `/pet companion <id>`:
+
+```text
+/pet companion koda
+/pet companion miko
+/pet companion bramble
+/pet companion nyx
+/pet companion pip
+/pet companion atlas
+```
+
+Check the current active pet and state with:
+
+```text
+/pet status
+```
+
+The current release uses Hermes commands for listing and selecting pets. It does
+not include a Codex-style visual pet picker yet.
+
 Manual install from a cloned repo:
 
 ```bash
