@@ -6,6 +6,8 @@ Native macOS desktop companions for Hermes Agent.
 
 The public starter set includes Koda, Miko, Bramble, Nyx, Pip, and Atlas: small humanoid robot animal companions that react to `/pet` commands, Hermes tool activity, stop-sign warnings, deletion confirmations, and agent state changes. Personal/private characters are intentionally not included in this public repo.
 
+Today, every included companion uses the same shared Hermes pet behavior. The companion themes, such as Koda as a goal guardian or Atlas as a memory companion, describe their visual identity and future product direction; they are not separate autonomous job systems yet.
+
 The companion roster is centralized in `hermes-agent-pets/companions.json`. The installable Hermes plugin lives in `hermes-agent-pets/hermes-pet-agent`.
 
 ## Quick Start
@@ -28,6 +30,19 @@ Restart Hermes after installing the plugin, then run:
 /pet companion pip
 /pet companion atlas
 ```
+
+## Updating
+
+To update an existing install, rerun the same installer command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fenner888/hermes-agent-pets-macos/main/install.sh | bash
+```
+
+Then restart Hermes Agent. The installer replaces the existing
+`~/.hermes/plugins/hermes-pet-agent` package with the latest GitHub version.
+
+Inside Hermes, `/pet update` prints the same update instructions.
 
 ## Choosing a Pet
 

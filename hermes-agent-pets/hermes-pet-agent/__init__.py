@@ -28,6 +28,7 @@ DEFAULT_PET_FILE = DEFAULT_PET_ASSET_DIR / "pet.json"
 DEFAULT_SPRITESHEET_FILE = DEFAULT_PET_ASSET_DIR / "spritesheet.webp"
 DEFAULT_STOP_POSE_FILE = DEFAULT_PET_ASSET_DIR / "guard-peek-stop-no-panel.png"
 DEFAULT_STOP_RUN_POSE_FILE = DEFAULT_PET_ASSET_DIR / "stop-sign-run-front-strip.png"
+INSTALL_COMMAND = "curl -fsSL https://raw.githubusercontent.com/fenner888/hermes-agent-pets-macos/main/install.sh | bash"
 HERMES_PET_STATES = (
     "idle",
     "thinking",
@@ -798,10 +799,10 @@ def _companion_roster_card() -> str:
     for item in companions:
         companion_id = str(item.get("id") or "?")
         name = str(item.get("name") or companion_id)
-        role = str(item.get("hermesRole") or "companion")
+        theme = str(item.get("hermesRole") or "companion")
         availability = "available" if _pet_is_packaged(companion_id) else "reference only"
         marker = " [active]" if companion_id == active_pet else ""
-        lines.append(f"- {name} ({companion_id}) - {role}; {availability}{marker}")
+        lines.append(f"- {name} ({companion_id}) - theme: {theme}; {availability}{marker}")
     lines.append("")
     lines.append("Use /pet companion <id> to switch to a packaged companion.")
     return "\n".join(lines)
@@ -871,6 +872,13 @@ def _handle_pet(raw_args: str = "") -> str:
     if action in {"companions", "companion", "roster", "pets"}:
         return _companion_roster_card()
 
+    if action in {"update", "upgrade"}:
+        return (
+            "To update Hermes Agent Pets, run this in a macOS Terminal:\n\n"
+            f"{INSTALL_COMMAND}\n\n"
+            "Then restart Hermes Agent. The installer replaces the existing pet plugin with the latest GitHub version."
+        )
+
     if action in {"dance", "dancing"}:
         choice = (argv[1] if len(argv) > 1 else "status").lower()
         if choice in {"on", "enable", "enabled", "yes", "true", "1"}:
@@ -931,7 +939,7 @@ def _handle_pet(raw_args: str = "") -> str:
         _save_and_sync(state)
         return f"Hermes pet cancelled code {code}." if removed else f"No pending Hermes pet approval for code {code}."
 
-    return "Usage: /pet [wake|sleep|status|companions|companion <id>|dance on|dance off|stop-sign|approve <code>|cancel <code>]"
+    return "Usage: /pet [wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>]"
 
 
 def _on_pre_tool_call(tool_name: str, args: Dict[str, Any], **kwargs):
@@ -1114,7 +1122,7 @@ def register(ctx) -> None:
         "pet",
         handler=_handle_pet,
         description="Control agent-native Hermes pets.",
-        args_hint="wake|sleep|status|companions|companion <id>|dance on|dance off|stop-sign|approve <code>|cancel <code>",
+        args_hint="wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>",
     )
     ctx.register_hook("pre_llm_call", _on_pre_llm_call)
     ctx.register_hook("post_llm_call", _on_post_llm_call)

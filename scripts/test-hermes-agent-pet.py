@@ -162,6 +162,8 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
             require(plugin._load()["active_pet"] == companion_id, f"companion switch did not persist {companion_id}")
         switched_back = plugin._handle_pet("companion koda")
         require("pet: koda" in switched_back, "companion switch did not return to Koda")
+        update_help = plugin._handle_pet("update")
+        require("curl -fsSL" in update_help and "restart hermes agent" in update_help.lower(), "update help did not explain terminal update flow")
 
         plugin._on_pre_llm_call("please run tests")
         require(plugin._load()["mood"] == "thinking", "pre LLM did not set thinking")
