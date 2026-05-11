@@ -136,12 +136,14 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
         require(plugin.HermesPetStateManager.overlay_state("recalling") == "review", "recalling state did not map to review")
 
         help_card = plugin._handle_pet("help")
-        for expected in ("/pet wake", "/pet companions", "/pet companion <id>", "/pet update", "/pet approve <code>"):
+        for expected in ("/pet wake", "/pet companions", "/pet companion <id>", "/pet version", "/pet update", "/pet approve <code>"):
             require(expected in help_card, f"help output missing {expected}")
+        require("version 1.0.0" in help_card, "help output did not show installed version")
         require("roles are themes today" in help_card, "help output did not clarify current companion roles")
 
         card = plugin._handle_pet("wake")
         require("awake" in card, "wake did not report awake")
+        require("version: 1.0.0" in card, "wake card did not show installed version")
         state = plugin._load()
         require(state["awake"] is True and state["mood"] == "idle", "wake did not persist awake idle state")
         require(state["dance_enabled"] is False, "dance mode must default to off")
@@ -167,8 +169,10 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
             require(plugin._load()["active_pet"] == companion_id, f"companion switch did not persist {companion_id}")
         switched_back = plugin._handle_pet("companion koda")
         require("pet: koda" in switched_back, "companion switch did not return to Koda")
+        version_help = plugin._handle_pet("version")
+        require(version_help == "Hermes Agent Pets version 1.0.0", "version command did not show installed version")
         update_help = plugin._handle_pet("update")
-        require("curl -fsSL" in update_help and "restart hermes agent" in update_help.lower(), "update help did not explain terminal update flow")
+        require("installed version: 1.0.0" in update_help and "curl -fsSL" in update_help and "restart hermes agent" in update_help.lower(), "update help did not explain terminal update flow")
 
         plugin._on_pre_llm_call("please run tests")
         require(plugin._load()["mood"] == "thinking", "pre LLM did not set thinking")

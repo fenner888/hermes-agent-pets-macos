@@ -86,6 +86,20 @@ if [[ ! -f "$plugin_src/plugin.yaml" || ! -f "$plugin_src/__init__.py" ]]; then
   exit 1
 fi
 
+plugin_version="$(python3 - "$plugin_src/plugin.yaml" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+version = "unknown"
+for line in path.read_text(encoding="utf-8").splitlines():
+    key, _, value = line.partition(":")
+    if key.strip() == "version":
+        version = value.strip().strip("'\"") or "unknown"
+        break
+print(version)
+PY
+)"
+
 case "$plugin_name" in
   hermes-pet-agent)
     for pet_id in koda miko bramble nyx pip atlas; do
@@ -136,6 +150,6 @@ find "$plugin_dest" \
   \( -name '.DS_Store' -o -name '__pycache__' -o -name '*.pyc' \) \
   -exec rm -rf {} +
 enable_live_plugin_config
-echo "installed $plugin_name"
+echo "installed $plugin_name $plugin_version"
 echo "$plugin_dest"
 echo "restart Hermes, then run /pet help"

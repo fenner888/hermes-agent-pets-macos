@@ -29,6 +29,7 @@ DEFAULT_SPRITESHEET_FILE = DEFAULT_PET_ASSET_DIR / "spritesheet.webp"
 DEFAULT_STOP_POSE_FILE = DEFAULT_PET_ASSET_DIR / "guard-peek-stop-no-panel.png"
 DEFAULT_STOP_RUN_POSE_FILE = DEFAULT_PET_ASSET_DIR / "stop-sign-run-front-strip.png"
 INSTALL_COMMAND = "curl -fsSL https://raw.githubusercontent.com/fenner888/hermes-agent-pets-macos/main/install.sh | bash"
+VERSION_FILE = PLUGIN_DIR / "plugin.yaml"
 HERMES_PET_STATES = (
     "idle",
     "thinking",
@@ -238,6 +239,17 @@ def _pet_manifest(pet_id: str) -> Dict[str, Any]:
 def _pet_display_name(pet_id: str) -> str:
     manifest = _pet_manifest(pet_id)
     return str(manifest.get("displayName") or pet_id.title())
+
+
+def _plugin_version() -> str:
+    try:
+        for line in VERSION_FILE.read_text(encoding="utf-8").splitlines():
+            key, _, value = line.partition(":")
+            if key.strip() == "version":
+                return value.strip().strip("'\"") or "unknown"
+    except Exception:
+        pass
+    return "unknown"
 
 
 def _panel_shell_path(asset_dir: Path) -> str:
@@ -818,7 +830,7 @@ def _pet_card(state: Dict[str, Any], title: str = "Hermes Pet") -> str:
     last = state.get("last_event") or "No recent activity."
     return (
         f"{active_pet_name} — {title}\n"
-        f"state: {awake} | pet: {active_pet} | mood: {mood} | dance: {dance} | failures: {state.get('failure_count', 0)} | pending: {pending}\n"
+        f"version: {_plugin_version()} | state: {awake} | pet: {active_pet} | mood: {mood} | dance: {dance} | failures: {state.get('failure_count', 0)} | pending: {pending}\n"
         f"last: {last}\n"
     )
 
@@ -826,13 +838,14 @@ def _pet_card(state: Dict[str, Any], title: str = "Hermes Pet") -> str:
 def _pet_help_card() -> str:
     return "\n".join(
         [
-            "Hermes Agent Pets help",
+            f"Hermes Agent Pets help — version {_plugin_version()}",
             "",
             "/pet wake - show the active companion.",
             "/pet sleep - hide the companion.",
             "/pet status - show pet, mood, failures, and approvals.",
             "/pet companions - list bundled companions.",
             "/pet companion <id> - switch to koda, miko, bramble, nyx, pip, or atlas.",
+            "/pet version - show the installed plugin version.",
             "/pet update - show the safe GitHub update command.",
             "/pet stop-sign - show the stop-sign safety state.",
             "/pet approve <code> - approve a pending deletion.",
@@ -852,6 +865,9 @@ def _handle_pet(raw_args: str = "") -> str:
 
     if action in {"help", "-h", "--help", "?"}:
         return _pet_help_card()
+
+    if action in {"version", "about"}:
+        return f"Hermes Agent Pets version {_plugin_version()}"
 
     if action in {"wake", "up", "start"}:
         _overlay_stop()
@@ -898,7 +914,8 @@ def _handle_pet(raw_args: str = "") -> str:
 
     if action in {"update", "upgrade"}:
         return (
-            "To update Hermes Agent Pets, run this in a macOS Terminal:\n\n"
+            f"Hermes Agent Pets installed version: {_plugin_version()}\n\n"
+            "To update, run this in a macOS Terminal:\n\n"
             f"{INSTALL_COMMAND}\n\n"
             "Then restart Hermes Agent. The installer replaces the existing pet plugin with the latest GitHub version."
         )
@@ -1146,7 +1163,7 @@ def register(ctx) -> None:
         "pet",
         handler=_handle_pet,
         description="Control agent-native Hermes pets.",
-        args_hint="help|wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>",
+        args_hint="help|version|wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>",
     )
     ctx.register_hook("pre_llm_call", _on_pre_llm_call)
     ctx.register_hook("post_llm_call", _on_post_llm_call)

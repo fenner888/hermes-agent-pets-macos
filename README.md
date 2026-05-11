@@ -17,6 +17,7 @@ The companion roster is centralized in `hermes-agent-pets/companions.json`. The 
 - Show the pet in the native macOS overlay.
 - React to Hermes activity with shared states such as idle, thinking, working, success, blocked, and error.
 - Show stop-sign and deletion-confirmation flows with each bundled companion.
+- Show the installed version with `/pet version`.
 - Update by rerunning the installer.
 
 ## Included Companions
@@ -51,6 +52,7 @@ Restart Hermes after installing the plugin, then run:
 /pet wake
 /pet companions
 /pet companion atlas
+/pet version
 /pet status
 ```
 
@@ -76,6 +78,7 @@ Then restart Hermes Agent. The installer replaces the existing
 `~/.hermes/plugins/hermes-pet-agent` package with the latest GitHub version.
 
 Inside Hermes, `/pet update` prints the same update instructions.
+It also shows the installed version before the update command.
 
 ## Pet Commands
 
@@ -107,6 +110,7 @@ Other useful commands:
 
 ```text
 /pet help
+/pet version
 /pet wake
 /pet sleep
 /pet update

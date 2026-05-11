@@ -35,10 +35,22 @@ fi
 
 cd "$repo_dir"
 scripts/install-hermes-agent-pet.sh
+installed_version="$(python3 - <<'PY'
+from pathlib import Path
+path = Path("hermes-agent-pets/hermes-pet-agent/plugin.yaml")
+version = "unknown"
+for line in path.read_text(encoding="utf-8").splitlines():
+    key, _, value = line.partition(":")
+    if key.strip() == "version":
+        version = value.strip().strip("'\"") or "unknown"
+        break
+print(version)
+PY
+)"
 
-cat <<'EOF'
+cat <<EOF
 
-Hermes Agent Pets installed.
+Hermes Agent Pets ${installed_version} installed.
 
 Next:
 1. Restart Hermes Agent.
