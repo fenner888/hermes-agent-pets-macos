@@ -135,6 +135,11 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
         require(plugin.HermesPetStateManager.overlay_state("blocked") == "stop-sign", "blocked state did not map to stop-sign")
         require(plugin.HermesPetStateManager.overlay_state("recalling") == "review", "recalling state did not map to review")
 
+        help_card = plugin._handle_pet("help")
+        for expected in ("/pet wake", "/pet companions", "/pet companion <id>", "/pet update", "/pet approve <code>"):
+            require(expected in help_card, f"help output missing {expected}")
+        require("roles are themes today" in help_card, "help output did not clarify current companion roles")
+
         card = plugin._handle_pet("wake")
         require("awake" in card, "wake did not report awake")
         state = plugin._load()

@@ -823,11 +823,35 @@ def _pet_card(state: Dict[str, Any], title: str = "Hermes Pet") -> str:
     )
 
 
+def _pet_help_card() -> str:
+    return "\n".join(
+        [
+            "Hermes Agent Pets help",
+            "",
+            "/pet wake - show the active companion.",
+            "/pet sleep - hide the companion.",
+            "/pet status - show pet, mood, failures, and approvals.",
+            "/pet companions - list bundled companions.",
+            "/pet companion <id> - switch to koda, miko, bramble, nyx, pip, or atlas.",
+            "/pet update - show the safe GitHub update command.",
+            "/pet stop-sign - show the stop-sign safety state.",
+            "/pet approve <code> - approve a pending deletion.",
+            "/pet cancel <code> - cancel a pending deletion.",
+            "/pet dance on|off - future mode for pets with dance assets.",
+            "",
+            "Note: roles are themes today. Bundled pets share the same behavior.",
+        ]
+    )
+
+
 def _handle_pet(raw_args: str = "") -> str:
     argv = (raw_args or "").strip().split()
     action = (argv[0] if argv else "wake").lower()
     state = _load()
     _cleanup_approvals(state)
+
+    if action in {"help", "-h", "--help", "?"}:
+        return _pet_help_card()
 
     if action in {"wake", "up", "start"}:
         _overlay_stop()
@@ -939,7 +963,7 @@ def _handle_pet(raw_args: str = "") -> str:
         _save_and_sync(state)
         return f"Hermes pet cancelled code {code}." if removed else f"No pending Hermes pet approval for code {code}."
 
-    return "Usage: /pet [wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>]"
+    return _pet_help_card()
 
 
 def _on_pre_tool_call(tool_name: str, args: Dict[str, Any], **kwargs):
@@ -1122,7 +1146,7 @@ def register(ctx) -> None:
         "pet",
         handler=_handle_pet,
         description="Control agent-native Hermes pets.",
-        args_hint="wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>",
+        args_hint="help|wake|sleep|status|companions|companion <id>|update|dance on|dance off|stop-sign|approve <code>|cancel <code>",
     )
     ctx.register_hook("pre_llm_call", _on_pre_llm_call)
     ctx.register_hook("post_llm_call", _on_post_llm_call)

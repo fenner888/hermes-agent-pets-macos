@@ -138,4 +138,4 @@ find "$plugin_dest" \
 enable_live_plugin_config
 echo "installed $plugin_name"
 echo "$plugin_dest"
-echo "restart Hermes, then run /pet wake"
+echo "restart Hermes, then run /pet help"

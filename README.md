@@ -47,11 +47,22 @@ curl -fsSL https://raw.githubusercontent.com/fenner888/hermes-agent-pets-macos/m
 Restart Hermes after installing the plugin, then run:
 
 ```text
+/pet help
 /pet wake
 /pet companions
 /pet companion atlas
 /pet status
 ```
+
+## Preview
+
+`/pet help` shows the available commands with short descriptions:
+
+![Hermes Agent Pets help command screenshot](docs/assets/hermes-pet-help-screenshot.png)
+
+`/pet companions` lists the bundled pets and shows the active companion:
+
+![Hermes Agent Pets companion selection screenshot](docs/assets/hermes-pet-companions-screenshot.png)
 
 ## Updating
 
@@ -95,6 +106,7 @@ Check the current active pet and state with:
 Other useful commands:
 
 ```text
+/pet help
 /pet wake
 /pet sleep
 /pet update

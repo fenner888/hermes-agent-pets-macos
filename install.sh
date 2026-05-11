@@ -42,8 +42,9 @@ Hermes Agent Pets installed.
 
 Next:
 1. Restart Hermes Agent.
-2. Run /pet wake.
-3. Run /pet companions.
+2. Run /pet help.
+3. Run /pet wake.
+4. Run /pet companions.
 
 To update later, rerun this same install command and restart Hermes Agent.
 EOF
