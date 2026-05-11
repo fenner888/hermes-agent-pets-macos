@@ -38,14 +38,15 @@ scripts/install-hermes-agent-pet.sh
 After restarting Hermes:
 
 ```text
+/pet help
 /pet wake
 /pet companions
 /pet companion koda
+/pet version
 ```
 
-Audio-reactive dancing is off by default and opt-in:
+Audio-reactive dancing is not part of the bundled starter assets yet. The command exists for future pets that include dance strips, but the current starter set reports dance as unavailable:
 
 ```text
 /pet dance on
-/pet dance off
 ```

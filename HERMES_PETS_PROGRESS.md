@@ -1,6 +1,6 @@
 # Hermes Pets Progress
 
-Last updated: May 8, 2026.
+Last updated: May 11, 2026.
 
 ## Current State
 
@@ -10,7 +10,8 @@ Last updated: May 8, 2026.
 - The public starter companions are Koda, Miko, Bramble, Nyx, Pip, and Atlas.
 - Personal/private character assets have been removed from public package paths.
 - The default public companion is Koda.
-- Audio-reactive dancing is off by default and opt-in through `/pet dance on`.
+- `/pet help`, `/pet version`, `/pet status`, and `/pet update` report the installed plugin version.
+- Audio-reactive dancing is not part of the bundled starter assets yet; `/pet dance on` reports unavailable for the current public companions.
 
 ## Relevant Files
 

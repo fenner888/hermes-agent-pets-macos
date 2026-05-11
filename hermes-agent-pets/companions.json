@@ -84,7 +84,7 @@
       "animalInspiration": "wolf/dog",
       "hermesRole": "goal guardian",
       "personality": "loyal, protective, steady",
-      "shortBio": "Koda keeps the active goal in view, nudging Hermes and the user when work drifts, stalls, or needs a clear next step.",
+      "shortBio": "Koda is themed around keeping the active goal in view, with a steady guardian presence for blocked or drifting work.",
       "visualDescription": "Humanoid robot wolf/dog goal guardian with dark gunmetal armor, tall angular ears, amber eyes, an amber chest core, compact heroic proportions, clawed feet, and small blue LED accents.",
       "primaryColor": "#F6A400",
       "secondaryColor": "#18212B",
@@ -121,7 +121,7 @@
         "Hermes blocked/error states currently map through the shared overlay fallback states.",
         "Goal drift reminder can use the waving/reminding row until a dedicated goal-guard row exists."
       ],
-      "useCaseInsideHermes": "Tracks active /goal progress, reminds the user when a task is blocked or drifting."
+      "useCaseInsideHermes": "Theme/future use case: active /goal progress, blocked work, and drift reminders."
     },
     {
       "id": "miko",
@@ -129,7 +129,7 @@
       "animalInspiration": "fox",
       "hermesRole": "skill scout",
       "personality": "clever, fast, strategic",
-      "shortBio": "Miko appears around skill discovery and improvement, making Hermes feel quick, curious, and tactical when new capabilities are found.",
+      "shortBio": "Miko is themed around skill discovery and improvement, giving Hermes a quick, curious, tactical companion style.",
       "visualDescription": "Sleek humanoid robot fox skill scout with sharp ears, slim agile armor, orange eyes, an orange chest core, orange and cyan light strips, a segmented tail, and a confident strategic stance.",
       "primaryColor": "#FF7A1A",
       "secondaryColor": "#171F2A",
@@ -166,7 +166,7 @@
         "Hermes learning/recalling states currently map through the shared review fallback.",
         "Skill discovery can use review or waving until a dedicated skill-scout row exists."
       ],
-      "useCaseInsideHermes": "Appears when Hermes discovers, creates, or improves a skill."
+      "useCaseInsideHermes": "Theme/future use case: skill discovery, creation, and tool improvement."
     },
     {
       "id": "bramble",
@@ -174,7 +174,7 @@
       "animalInspiration": "bear",
       "hermesRole": "deep work anchor",
       "personality": "calm, patient, resilient",
-      "shortBio": "Bramble is the companion for long-running work: steady, grounded, and reassuring when a task needs time or recovery.",
+      "shortBio": "Bramble is themed around long-running work: steady, grounded, and reassuring when a task needs time or recovery.",
       "visualDescription": "Larger humanoid robot bear deep-work anchor with rounded dark armor, heavier arms, blue eyes, a blue chest core, bronze claw details, broad feet, and a calm grounded posture.",
       "primaryColor": "#1EA7FF",
       "secondaryColor": "#202832",
@@ -211,7 +211,7 @@
         "Long-running work can use waiting/running rows depending on whether Hermes is planning or executing.",
         "Recovery and error states currently map through failed and idle fallback behavior."
       ],
-      "useCaseInsideHermes": "Focus mode, long-running work, background execution, recovery after failed tasks."
+      "useCaseInsideHermes": "Theme/future use case: focus mode, long-running work, background execution, and recovery after failed tasks."
     },
     {
       "id": "nyx",
@@ -219,7 +219,7 @@
       "animalInspiration": "cat/panther",
       "hermesRole": "stealth automation companion",
       "personality": "independent, sharp, quiet confidence",
-      "shortBio": "Nyx represents low-noise automation and fast command execution without stealing focus from the user's desktop.",
+      "shortBio": "Nyx is themed around low-noise automation and fast command execution without stealing focus from the user's desktop.",
       "visualDescription": "Dark humanoid robot cat/panther stealth automation companion with a smooth shell, violet eyes, a violet chest core, flexible posture, minimal armor, clawed feet, and a quiet segmented tail.",
       "primaryColor": "#7B4DFF",
       "secondaryColor": "#111722",
@@ -256,7 +256,7 @@
         "Silent automation can use running/waiting rows with low-noise Hermes notifications.",
         "Success currently maps through the shared overlay fallback until a dedicated quiet-complete row exists."
       ],
-      "useCaseInsideHermes": "Silent automation, background tasks, quick command execution."
+      "useCaseInsideHermes": "Theme/future use case: silent automation, background tasks, and quick command execution."
     },
     {
       "id": "pip",
@@ -264,7 +264,7 @@
       "animalInspiration": "rabbit",
       "hermesRole": "reminder/check-in companion",
       "personality": "fast, upbeat, curious",
-      "shortBio": "Pip handles quick nudges, routine check-ins, and lightweight reminders with bright but restrained energy.",
+      "shortBio": "Pip is themed around quick nudges, routine check-ins, and lightweight reminders with bright but restrained energy.",
       "visualDescription": "Smaller humanoid robot rabbit reminder companion with long mechanical ears, green eyes, a green chest core, spring-like legs, yellow joint accents, friendly expression, and quick upright posture.",
       "primaryColor": "#2FE6B7",
       "secondaryColor": "#202936",
@@ -301,7 +301,7 @@
         "Reminding maps cleanly to waving for quick check-ins and lightweight nudges.",
         "Future dedicated reminder rows can add ear-perk timing without changing the shared state model."
       ],
-      "useCaseInsideHermes": "Reminders, quick check-ins, daily routines, lightweight nudges."
+      "useCaseInsideHermes": "Theme/future use case: reminders, quick check-ins, daily routines, and lightweight nudges."
     },
     {
       "id": "atlas",
@@ -309,7 +309,7 @@
       "animalInspiration": "owl/eagle",
       "hermesRole": "memory and insight companion",
       "personality": "observant, analytical, mentor-like",
-      "shortBio": "Atlas surfaces memory, context, summaries, and recommendations when Hermes needs to reason from past work.",
+      "shortBio": "Atlas is themed around memory, context, summaries, and recommendations when Hermes needs to reason from past work.",
       "visualDescription": "Humanoid robot owl/eagle memory companion with wing-like shoulder panels, blue eyes, a blue chest core, gold beak and trim, clawed feet, and an observant mentor-like posture.",
       "primaryColor": "#2EA8FF",
       "secondaryColor": "#182436",
@@ -346,7 +346,7 @@
         "Recalling and learning currently map through review until dedicated memory-insight rows exist.",
         "Memory summaries can use waiting/review depending on whether Hermes is gathering context or presenting insight."
       ],
-      "useCaseInsideHermes": "Memory recall, summaries, progress reports, recommendations."
+      "useCaseInsideHermes": "Theme/future use case: memory recall, summaries, progress reports, and recommendations."
     }
   ]
 }

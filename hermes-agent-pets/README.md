@@ -33,13 +33,16 @@ Shared companion data:
 - `reference-art/`: manifest and imported source concept images.
 - Validate with `scripts/validate-hermes-companions.py`.
 
-Current public starter companions:
+Current public starter companion themes:
 
-- Koda: goal guardian.
-- Miko: skill scout.
-- Bramble: deep work anchor.
-- Nyx: stealth automation companion.
-- Pip: reminder/check-in companion.
-- Atlas: memory and insight companion.
+- Koda: theme: goal guardian.
+- Miko: theme: skill scout.
+- Bramble: theme: deep work anchor.
+- Nyx: theme: stealth automation companion.
+- Pip: theme: reminder/check-in companion.
+- Atlas: theme: memory and insight companion.
+
+These labels are character themes and future product direction. The bundled
+companions share the same Hermes behavior in the current release.
 
 Personal/private characters are intentionally excluded from this public package.
