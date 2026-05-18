@@ -1,6 +1,6 @@
 # Hermes Pets Progress
 
-Last updated: May 11, 2026.
+Last updated: May 18, 2026.
 
 ## Current State
 
@@ -10,8 +10,10 @@ Last updated: May 11, 2026.
 - The public starter companions are Koda, Miko, Bramble, Nyx, Pip, and Atlas.
 - Personal/private character assets have been removed from public package paths.
 - The default public companion is Koda.
+- Current plugin version is `1.0.1`.
 - `/pet help`, `/pet version`, `/pet status`, and `/pet update` report the installed plugin version.
 - Audio-reactive dancing is not part of the bundled starter assets yet; `/pet dance on` reports unavailable for the current public companions.
+- The plugin manifest and runtime now both cover Hermes LLM and tool lifecycle hooks.
 
 ## Relevant Files
 
@@ -41,6 +43,10 @@ Last updated: May 11, 2026.
 - Removed private/personal character assets from the public repo package.
 - Added public repo readiness docs: `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CUSTOM_PETS.md`, GitHub issue templates, and a PR template.
 - Added `scripts/smoke-install.sh` for repeatable temp install rehearsals.
+- Tightened the dance guard so dance cannot be forced on unless the active pet actually ships dance assets.
+- Tightened tool failure detection so benign successful output mentioning `"error"` or `timeout` does not trigger the failed/stop-sign escalation path.
+- Expanded native overlay smoke coverage so all six bundled pets are launched with their spritesheet, stop pose, run-up strip, and panel shell.
+- Expanded release doctor hygiene checks to catch `.DS_Store`, `__pycache__`, and `.pyc` files across public repo folders.
 
 ## Validation Results
 
@@ -58,19 +64,18 @@ HERMES_PLUGIN_DIR=/tmp/hermes-plugin-test scripts/install-hermes-agent-pet.sh
 scripts/test-hermes-agent-pet.py --plugin /tmp/hermes-plugin-test/hermes-pet-agent
 ```
 
-Latest pass:
+Latest pass, May 18, 2026:
 
 - All six `scripts/validate-hermes-pet.py character-sets/<pet-id>` checks passed.
 - `scripts/validate-hermes-companions.py` passed.
-- `scripts/hermes-pet-overlay/build.sh` passed and produced `build/HermesPetOverlay.app`.
-- `scripts/test-hermes-agent-pet.py` passed.
-- `scripts/test-hermes-agent-pet.py --overlay` passed; the native macOS overlay launched and responded to state-file changes.
-- `scripts/hermes-pet-doctor --build` passed with result `ready`.
-- `HERMES_PLUGIN_DIR=/tmp/hermes-plugin-test scripts/install-hermes-agent-pet.sh` passed.
-- `scripts/test-hermes-agent-pet.py --plugin /tmp/hermes-plugin-test/hermes-pet-agent` passed.
-- `scripts/smoke-install.sh` passed.
-- `scripts/smoke-install.sh --overlay` passed and launched the temp-installed plugin binary.
-- Stop-sign run-up strips were visually checked for all six public companions and are front-facing with the stop sign in hand.
+- `python3 -m py_compile hermes-agent-pets/hermes-pet-agent/__init__.py scripts/*.py` passed.
+- `scripts/test-hermes-agent-pet.py` passed after adding manifest-hook and dance-env regression coverage.
+- `scripts/test-hermes-agent-pet.py` now covers the false stop-sign regression: repeated successful output mentioning `"error"` or `timeout` keeps the pet in `succeeded` with `failure_count` at 0, while explicit tracebacks still count as failures.
+- `scripts/smoke-install.sh` passed with a temp plugin install.
+- A worktree tarball rehearsal through `install.sh` passed and the installed temp plugin passed `scripts/test-hermes-agent-pet.py --plugin`.
+- A manual native overlay smoke loop launched Koda, Miko, Bramble, Nyx, Pip, and Atlas and verified idle, running, stop-sign, and confirm-delete states did not crash.
+- `scripts/hermes-pet-doctor --build` passed with result `ready` after generated local cache cleanup.
+- Stop-sign run-up strips were checked for all six public companions and are front-facing with the stop sign in hand.
 - Runtime install rehearsal confirmed no `reference-art`, `.DS_Store`, `__pycache__`, or `.pyc` files are copied into the installed plugin.
 - Reference-art PNG metadata was stripped to avoid false secret/token scan hits without changing the public artwork.
 - Private character text audit outside ignored/generated folders returned no matches.
@@ -80,7 +85,8 @@ Latest pass:
 
 - None currently known after the private character removal pass.
 
-## Remaining Before Public GitHub
+## Remaining / Upgrade Candidates
 
-- Final first-time-user README skim.
-- Confirm the target GitHub remote/repo name, then push when ready.
+- Optional future work: add a visual pet picker instead of command-only pet selection.
+- Optional future work: add real per-pet role systems for goals, skills, memory, reminders, and automation.
+- Optional future work: add bundled dance strips if audio-reactive dancing becomes part of a release.

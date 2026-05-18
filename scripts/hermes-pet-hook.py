@@ -242,7 +242,13 @@ def is_failed_result(result_text: str) -> bool:
             return True
 
     lowered = text.lower()
-    return any(marker in lowered for marker in ("\"error\"", "traceback", "timed out", "timeout"))
+    return bool(
+        re.search(r"(?m)^traceback \(most recent call last\):", lowered)
+        or re.search(r"(?m)^(error|failed|failure):\s+", lowered)
+        or re.search(r"\b(?:command|operation|request)\s+timed out\b", lowered)
+        or re.search(r"\btimed out after\s+\d", lowered)
+        or re.search(r"\btimeout expired\b", lowered)
+    )
 
 
 def bump_failure_count(failed: bool) -> int:

@@ -70,18 +70,27 @@ def check_companion_roster(root: Path, failures: list[str], warnings: list[str])
 
 
 def check_no_generated_files(root: Path, failures: list[str]) -> None:
-    release_root = root / "hermes-agent-pets"
+    release_roots = [
+        root / "hermes-agent-pets",
+        root / "character-sets",
+        root / "docs",
+        root / "scripts",
+        root / ".github",
+    ]
     bad_names = {"__pycache__", "build", "hatch-runs", ".venv", ".DS_Store"}
     bad_paths = []
-    if release_root.is_dir():
+    for release_root in release_roots:
+        if not release_root.is_dir():
+            continue
         for item in release_root.rglob("*"):
             if item.name in bad_names or item.suffix == ".pyc":
                 bad_paths.append(item)
     if bad_paths:
-        failures.append("release folder cleanliness")
-        line("fail", "release folder cleanliness", ", ".join(str(path) for path in bad_paths[:5]))
+        failures.append("public folder cleanliness")
+        line("fail", "public folder cleanliness", ", ".join(str(path) for path in bad_paths[:5]))
     else:
-        line("ok", "release folder cleanliness", str(release_root))
+        clean_roots = ", ".join(str(path.relative_to(root)) for path in release_roots if path.is_dir())
+        line("ok", "public folder cleanliness", clean_roots)
 
 
 def check_no_local_path_regressions(root: Path, failures: list[str]) -> None:

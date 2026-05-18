@@ -409,11 +409,11 @@ def _front_window_anchor_enabled() -> bool:
 
 
 def _dance_enabled_for_state(state: Optional[Dict[str, Any]] = None) -> bool:
-    if _truthy_env("HERMES_PET_DANCE_ON_BY_DEFAULT"):
-        return True
     if state is None:
         state = _load()
-    return bool(state.get("dance_enabled")) and _pet_supports_dance(_active_pet_id(state))
+    active_pet = _active_pet_id(state)
+    dance_requested = bool(state.get("dance_enabled")) or _truthy_env("HERMES_PET_DANCE_ON_BY_DEFAULT")
+    return dance_requested and _pet_supports_dance(active_pet)
 
 
 def _spawn_detached_overlay(args: list[str]) -> bool:
@@ -732,19 +732,22 @@ def _cleanup_approvals(state: Dict[str, Any]) -> None:
     }
 
 
-def _is_failed(result: str) -> bool:
+def _is_failed(result: Any) -> bool:
     text = result or ""
-    lowered = text.lower()
+    lowered = str(text).lower()
     if (
         "hermes pet denied deletion" in lowered
         or "hermes pet cancelled" in lowered
         or "hermes pet is already handling deletion" in lowered
     ):
         return False
-    try:
-        data = json.loads(text)
-    except Exception:
-        data = None
+    if isinstance(result, dict):
+        data = result
+    else:
+        try:
+            data = json.loads(str(text))
+        except Exception:
+            data = None
     if isinstance(data, dict):
         if isinstance(data.get("exit_code"), int) and data["exit_code"] != 0:
             return True
@@ -752,7 +755,13 @@ def _is_failed(result: str) -> bool:
             return True
         if str(data.get("status") or "").lower() in {"error", "failed", "failure"}:
             return True
-    return any(marker in lowered for marker in ('"error"', "traceback", "timed out", "timeout"))
+    return bool(
+        re.search(r"(?m)^traceback \(most recent call last\):", lowered)
+        or re.search(r"(?m)^(error|failed|failure):\s+", lowered)
+        or re.search(r"\b(?:command|operation|request)\s+timed out\b", lowered)
+        or re.search(r"\btimed out after\s+\d", lowered)
+        or re.search(r"\btimeout expired\b", lowered)
+    )
 
 
 def _stop_sign(title: str, body: str) -> str:
@@ -1123,7 +1132,7 @@ def _on_post_llm_call(assistant_response: str = "", **kwargs):
     return None
 
 
-def _on_post_tool_call(tool_name: str, args: Dict[str, Any], result: str, **kwargs):
+def _on_post_tool_call(tool_name: str, args: Dict[str, Any], result: Any, **kwargs):
     if not _overlay_enabled_for_process():
         return None
     state = _load()
@@ -1144,7 +1153,7 @@ def _on_post_tool_call(tool_name: str, args: Dict[str, Any], result: str, **kwar
             state["last_event"] = f"Tool failed: {tool_name}"
     else:
         state["failure_count"] = 0
-        lowered_result = (result or "").lower()
+        lowered_result = str(result or "").lower()
         if "hermes pet denied deletion" in lowered_result:
             state["mood"] = "idle"
             state["last_event"] = "Deletion cancelled by Hermes pet."

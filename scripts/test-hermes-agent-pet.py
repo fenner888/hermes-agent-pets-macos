@@ -106,6 +106,9 @@ def check_plugin_assets(plugin_dir: Path) -> None:
     ]
     missing = [str(path) for path in required if not path.is_file()]
     require(not missing, "missing plugin files: " + ", ".join(missing))
+    manifest = (plugin_dir / "plugin.yaml").read_text(encoding="utf-8", errors="ignore")
+    for hook in ("pre_llm_call", "post_llm_call", "pre_tool_call", "post_tool_call"):
+        require(f"  - {hook}" in manifest, f"plugin manifest does not advertise {hook}")
 
 
 def check_plugin_runtime(plugin_dir: Path) -> None:
@@ -135,15 +138,16 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
         require(plugin.HermesPetStateManager.overlay_state("blocked") == "stop-sign", "blocked state did not map to stop-sign")
         require(plugin.HermesPetStateManager.overlay_state("recalling") == "review", "recalling state did not map to review")
 
+        version = plugin._plugin_version()
         help_card = plugin._handle_pet("help")
         for expected in ("/pet wake", "/pet companions", "/pet companion <id>", "/pet version", "/pet update", "/pet approve <code>"):
             require(expected in help_card, f"help output missing {expected}")
-        require("version 1.0.0" in help_card, "help output did not show installed version")
+        require(f"version {version}" in help_card, "help output did not show installed version")
         require("roles are themes today" in help_card, "help output did not clarify current companion roles")
 
         card = plugin._handle_pet("wake")
         require("awake" in card, "wake did not report awake")
-        require("version: 1.0.0" in card, "wake card did not show installed version")
+        require(f"version: {version}" in card, "wake card did not show installed version")
         state = plugin._load()
         require(state["awake"] is True and state["mood"] == "idle", "wake did not persist awake idle state")
         require(state["dance_enabled"] is False, "dance mode must default to off")
@@ -170,9 +174,9 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
         switched_back = plugin._handle_pet("companion koda")
         require("pet: koda" in switched_back, "companion switch did not return to Koda")
         version_help = plugin._handle_pet("version")
-        require(version_help == "Hermes Agent Pets version 1.0.0", "version command did not show installed version")
+        require(version_help == f"Hermes Agent Pets version {version}", "version command did not show installed version")
         update_help = plugin._handle_pet("update")
-        require("installed version: 1.0.0" in update_help and "curl -fsSL" in update_help and "restart hermes agent" in update_help.lower(), "update help did not explain terminal update flow")
+        require(f"installed version: {version}" in update_help and "curl -fsSL" in update_help and "restart hermes agent" in update_help.lower(), "update help did not explain terminal update flow")
 
         plugin._on_pre_llm_call("please run tests")
         require(plugin._load()["mood"] == "thinking", "pre LLM did not set thinking")
@@ -184,6 +188,18 @@ def check_plugin_runtime(plugin_dir: Path) -> None:
         require(plugin._load()["mood"] == "running", "safe command did not set running")
         plugin._on_post_tool_call("exec_command", {"command": "echo ok"}, json.dumps({"exit_code": 0}))
         require(plugin._load()["mood"] == "succeeded", "successful command did not set succeeded")
+
+        noisy_success = 'search result mentioned "error" text and timeout docs, but command succeeded'
+        for _index in range(3):
+            plugin._on_post_tool_call("exec_command", {"command": "echo ok"}, noisy_success)
+            current = plugin._load()
+            require(current["mood"] == "succeeded", "benign output text was misclassified as a tool failure")
+            require(current["failure_count"] == 0, "benign output text incremented failure count")
+
+        plugin._on_post_tool_call("exec_command", {"command": "python"}, "Traceback (most recent call last):\nboom")
+        require(plugin._load()["mood"] == "failed", "explicit traceback text was not treated as a failure")
+        plugin._on_post_tool_call("exec_command", {"command": "echo ok"}, json.dumps({"exit_code": 0}))
+        require(plugin._load()["failure_count"] == 0, "successful command did not reset failure count")
 
         for index in range(3):
             plugin._on_post_tool_call("exec_command", {"command": "false"}, json.dumps({"exit_code": 1}))
@@ -284,6 +300,15 @@ def check_plugin_launch_args(plugin_dir: Path) -> None:
         require("--anchor-front-window" not in captured[-1], "overlay launch ignored HERMES_PET_ANCHOR_TO_FRONT_WINDOW=0")
         os.environ.pop("HERMES_PET_ANCHOR_TO_FRONT_WINDOW", None)
 
+        captured.clear()
+        os.environ["HERMES_PET_DANCE_ON_BY_DEFAULT"] = "1"
+        require(plugin._overlay_launch("idle"), "overlay launch with default dance env did not return success")
+        if plugin._pet_supports_dance(plugin._active_pet_id(state)):
+            require("--audio-reactive" in captured[-1], "dance-capable pet did not honor default dance env")
+        else:
+            require("--audio-reactive" not in captured[-1], "default dance env enabled audio mode without dance assets")
+        os.environ.pop("HERMES_PET_DANCE_ON_BY_DEFAULT", None)
+
 
 def load_hook(temp_root: Path) -> ModuleType:
     root = repo_root()
@@ -329,6 +354,8 @@ def check_legacy_hook_runtime() -> None:
         require(not active.exists(), "post hook did not remove matching active watcher file")
         require(states[-1] == "success", "post hook did not set success")
 
+        require(not hook.is_failed_result('search result mentioned "error" and timeout docs'), "legacy hook misclassified benign output as failure")
+        require(hook.is_failed_result("Traceback (most recent call last):\nboom"), "legacy hook missed traceback failure")
         require(hook.needs_delete_confirmation("rm README.md"), "rm command was not recognized as deletion-like")
         require(hook.needs_delete_confirmation("python3 -c 'import os; os.remove(\"/tmp/x\")'"), "Python deletion was not recognized")
         require(hook.is_dangerous("git push --force"), "dangerous git command was not recognized")
@@ -355,17 +382,19 @@ def check_installer_safety(root: Path) -> None:
 def check_overlay_binary(root: Path, plugin_dir: Path, audio_reactive: bool) -> None:
     installed_overlay = plugin_dir / "bin" / "hermes-pet-overlay"
     overlay = installed_overlay if installed_overlay.is_file() else root / "build" / "HermesPetOverlay.app" / "Contents" / "MacOS" / "hermes-pet-overlay"
-    koda_spritesheet = plugin_dir / "assets" / "koda" / "spritesheet.webp"
     require(overlay.is_file() and os.access(overlay, os.X_OK), f"overlay executable is missing: {overlay}")
-    require(koda_spritesheet.is_file(), f"spritesheet is missing: {koda_spritesheet}")
 
-    def run_overlay_smoke(spritesheet: Path, force_generic_stop_assets: bool = False) -> None:
+    def run_overlay_smoke(pet_id: str) -> None:
+        asset_dir = plugin_dir / "assets" / pet_id
+        spritesheet = asset_dir / "spritesheet.webp"
+        require(spritesheet.is_file(), f"{pet_id} spritesheet is missing: {spritesheet}")
         with tempfile.TemporaryDirectory(prefix="hermes-pet-overlay.", dir="/private/tmp") as temp_name:
             temp_root = Path(temp_name)
             state_file = temp_root / "state"
             awake_file = temp_root / "awake"
             position_file = temp_root / "position"
             heartbeat_file = temp_root / "heartbeat"
+            decision_file = temp_root / "delete.decision"
             awake_file.touch()
             heartbeat_file.write_text(f"{time.time():.6f}\n")
             args = [
@@ -382,9 +411,11 @@ def check_overlay_binary(root: Path, plugin_dir: Path, audio_reactive: bool) -> 
                 "--clickable",
                 "--scale", "0.30",
                 "--margin", "24",
+                "--pet-name", pet_id.title(),
+                "--stop-pose", str(asset_dir / "guard-peek-stop-no-panel.png"),
+                "--stop-run-pose", str(asset_dir / "stop-sign-run-front-strip.png"),
+                "--panel-shell", str(asset_dir / "panel-shell.png"),
             ]
-            if force_generic_stop_assets:
-                args.extend(["--stop-pose", "", "--stop-run-pose", "", "--panel-shell", ""])
             if audio_reactive:
                 args.append("--audio-reactive")
             process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -397,6 +428,9 @@ def check_overlay_binary(root: Path, plugin_dir: Path, audio_reactive: bool) -> 
                 state_file.write_text(f"stop-sign {time.time():.6f} test stop\n")
                 time.sleep(0.3)
                 require(process.poll() is None, f"overlay exited after stop-sign state for {spritesheet}")
+                state_file.write_text(f"confirm-delete {decision_file} test delete\n")
+                time.sleep(0.4)
+                require(process.poll() is None, f"overlay exited after confirm-delete state for {spritesheet}")
             finally:
                 process.terminate()
                 try:
@@ -408,7 +442,8 @@ def check_overlay_binary(root: Path, plugin_dir: Path, audio_reactive: bool) -> 
             if process.returncode not in (0, -15):
                 raise CheckFailure(f"overlay exited with {process.returncode}: {stdout} {stderr}")
 
-    run_overlay_smoke(koda_spritesheet)
+    for pet_id in PACKAGED_COMPANIONS:
+        run_overlay_smoke(pet_id)
 
 
 def main() -> int:
